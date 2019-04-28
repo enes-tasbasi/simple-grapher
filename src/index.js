@@ -7,6 +7,8 @@ const button = document.querySelector("button");
 
 button.addEventListener("click", parseInput);
 
+canvas.addEventListener("mousemove", trackCanvasMouse);
+
 canvas.width = 800;
 canvas.height = 600;
 
@@ -16,6 +18,10 @@ let width = canvas.width;
 let height = canvas.height;
 let originX = canvas.width / 2;
 let originY = canvas.height / 2;
+
+function trackCanvasMouse(e) {
+  console.log(e.offsetX - originX, -(e.offsetY - originY));
+}
 
 function drawBackground() {
   for (let i = 0; i < 680; i++) {
@@ -50,7 +56,6 @@ function drawBackground() {
 drawBackground();
 
 let equString;
-let parsedEqu;
 
 function parseInput() {
   equString = input.value;
@@ -63,16 +68,15 @@ function drawGraph(equation = "x^2") {
   c.strokeStyle = "rgba(0, 0, 0, 0.9)";
 
   c.beginPath();
-  for (let i = -50; i < 50; i++) {
+  for (let i = -20; i < 20; i++) {
     parser.set("x", i);
     draw(i, parser.eval(equation));
-    console.log("Evaluated " + i + " " + parser.eval(equation));
+
   }
 
   function draw(x, y) {
     let calculatedX = originX + x;
     let calculatedY = originY + -y;
-    console.log("Calculated " + calculatedX + " " + calculatedY);
     c.lineTo(calculatedX, calculatedY);
   }
   c.stroke();
