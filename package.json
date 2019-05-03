@@ -9,6 +9,7 @@
   "author": "Enes Tasbasi",
   "license": "ISC",
   "dependencies": {
+    "body-scroll-lock": "^2.6.1",
     "mathjs": "^5.9.0"
   },
   "devDependencies": {
