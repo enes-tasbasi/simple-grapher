@@ -1,12 +1,11 @@
 let coordinates = document.querySelector(".coordinates");
 
 let timeout;
-const trackCanvasMouse = ({ e, originX, originY }) => {
+const trackCanvasMouse = (e, originX, originY) => {
   let x = e.offsetX;
   let y = e.offsetY;
   let calculatedX = (x - originX) / 20;
   let calculatedY = (originY + -y) / 20;
-  console.log(e);
   coordinates.innerText = `${calculatedX.toFixed(0)}, ${calculatedY.toFixed(
     0
   )}`;
@@ -14,6 +13,8 @@ const trackCanvasMouse = ({ e, originX, originY }) => {
   coordinates.style.top = `${y}px`;
 
   coordinates.style.display = "inline";
+
+  //
   if (timeout) {
     clearTimeout(timeout);
   }
@@ -50,8 +51,6 @@ const drawBackground = (c, width, height) => {
       c.closePath();
     }
   }
-
-  return c;
 };
 
 module.exports = { trackCanvasMouse, drawBackground };

@@ -6,7 +6,7 @@ module.exports = {
     compress: true,
     port: 3000
   },
-  watch: true,
+  watch: false,
   mode: "development",
   entry: "./src/index.js",
   output: {

@@ -4,13 +4,15 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx webpack-dev-server --open"
+    "dev": "npx webpack-dev-server --open",
+    "build": "npx webpack-dev-server  --open"
   },
   "author": "Enes Tasbasi",
   "license": "ISC",
   "dependencies": {
     "body-scroll-lock": "^2.6.1",
-    "mathjs": "^5.9.0"
+    "mathjs": "^5.9.0",
+    "yargs": "^13.2.2"
   },
   "devDependencies": {
     "webpack": "^4.30.0",

@@ -33,14 +33,9 @@ input {
   font-size: 1.1em;
 }
 
-button {
-  font-size: 1.2em;
-  padding: 10px 25px;
-  margin: 10px 0;
-  display: block;
-}
 
 .coordinates {
+  z-index: -1;
   position: absolute;
   height: 40px;
   width: fit-content;
