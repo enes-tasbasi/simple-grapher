@@ -23,29 +23,31 @@ function Graph(
 
   drawBackground(c, width, height);
 
-  this.drawGraph = function(equation = "x^2") {
+  this.drawGraph = function(equations = ["x^2"]) {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
     c.strokeStyle = "rgba(0, 0, 0, 0.9)";
 
-    c.beginPath();
-    for (let i = -20; i < 20; i = i + 0.1) {
-      parser.set("x", i);
-      let y;
-      try {
-        y = parser.eval(equation);
-      } catch (e) {
-        console.log(e);
+    // Takes the eqauations array and draws each equation.
+    equations.forEach(equation => {
+      c.beginPath();
+      for (let i = -20; i < 20; i = i + 0.1) {
+        parser.set("x", i);
+        let y;
+        try {
+          y = parser.eval(equation);
+        } catch (e) {}
+        draw(i, y);
       }
-      draw(i, y);
-    }
+    });
 
     function draw(x, y) {
       let calculatedX = originX + x * 20;
       let calculatedY = originY + -y * 20;
       c.lineTo(calculatedX, calculatedY);
+      c.lineWidth = 0.01;
+      c.stroke();
     }
-    c.stroke();
     c.closePath();
   };
 
@@ -53,12 +55,26 @@ function Graph(
 
   if (enableCoords) {
     this.canvas.addEventListener("mousemove", e => {
-      trackCanvasMouse(e, originX, originY);
+      trackCanvasMouse(e, this.canvas, originX, originY);
     });
   }
+
+  this.bindInput = function(element) {
+    element.addEventListener("input", () => {
+      this.drawGraph(element.value);
+    });
+  };
 }
 
-new Graph(document.querySelector("canvas"));
+new Graph(document.querySelector("canvas")).bindInput(
+  document.querySelector("input")
+);
+
+// document
+//   .querySelectorAll("canvas")
+//   .forEach(
+//     canvas => new Graph(canvas, { height: 200, width: 200, enableCoords: true })
+//   );
 
 // const canvas = document.querySelector("canvas");
 // const input = document.querySelector("input");

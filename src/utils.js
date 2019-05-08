@@ -1,7 +1,12 @@
-let coordinates = document.querySelector(".coordinates");
+// let coordinates = document.querySelector(".coordinates");
+let coordinates = document.createElement("div");
+coordinates.className = "coordinates";
 
 let timeout;
-const trackCanvasMouse = (e, originX, originY) => {
+const trackCanvasMouse = (e, canvas, originX, originY) => {
+  canvas.parentNode.insertBefore(coordinates, canvas.nextSibling);
+  let coordsX = e.clientX;
+  let coordsY = e.clientY;
   let x = e.offsetX;
   let y = e.offsetY;
   let calculatedX = (x - originX) / 20;
@@ -9,12 +14,11 @@ const trackCanvasMouse = (e, originX, originY) => {
   coordinates.innerText = `${calculatedX.toFixed(0)}, ${calculatedY.toFixed(
     0
   )}`;
-  coordinates.style.left = `${x}px`;
-  coordinates.style.top = `${y}px`;
+  coordinates.style.left = `${coordsX}px`;
+  coordinates.style.top = `${coordsY}px`;
 
   coordinates.style.display = "inline";
 
-  //
   if (timeout) {
     clearTimeout(timeout);
   }
