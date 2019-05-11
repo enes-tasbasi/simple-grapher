@@ -29,6 +29,7 @@ const trackCanvasMouse = (e, canvas, originX, originY) => {
 
 const drawBackground = (c, width, height) => {
   for (let i = 0; i < width; i++) {
+    c.lineWidth = 1;
     c.strokeStyle = "rgba(0,0,0,0.3)";
     if (i % (width / 2) == 0) {
       c.strokeStyle = "rgba(0, 0, 0, 0.8)";

@@ -23,29 +23,37 @@ function Graph(
 
   drawBackground(c, width, height);
 
-  this.drawGraph = function(equations = ["x^2"]) {
+  this.drawGraph = function(equation = "x^2") {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
     c.strokeStyle = "rgba(0, 0, 0, 0.9)";
 
-    // Takes the eqauations array and draws each equation.
-    equations.forEach(equation => {
+    // if equation is single string calculate once, if it is an array loop throught to calculate all of them
+    if (typeof equation == "string") {
+      calculate(equation);
+    } else if (typeof equation == "object") {
+      equation.forEach(equation => calculate(equation));
+    }
+
+    function calculate(equation) {
       c.beginPath();
       for (let i = -20; i < 20; i = i + 0.1) {
         parser.set("x", i);
         let y;
         try {
           y = parser.eval(equation);
-        } catch (e) {}
+        } catch (e) {
+          console.log(e);
+        }
         draw(i, y);
       }
-    });
+    }
 
     function draw(x, y) {
       let calculatedX = originX + x * 20;
       let calculatedY = originY + -y * 20;
-      c.lineTo(calculatedX, calculatedY);
       c.lineWidth = 0.01;
+      c.lineTo(calculatedX, calculatedY);
       c.stroke();
     }
     c.closePath();
@@ -55,7 +63,7 @@ function Graph(
 
   if (enableCoords) {
     this.canvas.addEventListener("mousemove", e => {
-      trackCanvasMouse(e, this.canvas, originX, originY);
+      trackCanvasMouse(e, canvas, originX, originY);
     });
   }
 
@@ -64,70 +72,22 @@ function Graph(
       this.drawGraph(element.value);
     });
   };
+
+  this.bindInputs = function(elements) {
+    let inputs = [];
+    let elementInputs = {};
+    elements.forEach(element => (elementInputs[element.id] = element.value));
+    elements.forEach(element =>
+      element.addEventListener("input", e => {
+        elementInputs[e.target.id] = e.target.value;
+        this.drawGraph(
+          Object.keys(elementInputs).map(key => elementInputs[key])
+        );
+      })
+    );
+  };
 }
 
-new Graph(document.querySelector("canvas")).bindInput(
-  document.querySelector("input")
+new Graph(document.querySelector("canvas")).bindInputs(
+  document.querySelectorAll("input")
 );
-
-// document
-//   .querySelectorAll("canvas")
-//   .forEach(
-//     canvas => new Graph(canvas, { height: 200, width: 200, enableCoords: true })
-//   );
-
-// const canvas = document.querySelector("canvas");
-// const input = document.querySelector("input");
-
-// canvas.width = 520;
-// canvas.height = 520;
-
-// let width = canvas.width;
-// let height = canvas.height;
-// let originX = canvas.width / 2;
-// let originY = canvas.height / 2;
-
-// input.addEventListener("input", parseInput);
-
-// canvas.addEventListener("mousemove", e => {
-//   trackCanvasMouse({ e, originX, originY });
-// });
-
-// let c = canvas.getContext("2d");
-
-// drawBackground(c, width, height);
-
-// let equString;
-
-// function parseInput() {
-//   equString = input.value;
-//   drawGraph(equString);
-// }
-
-// function drawGraph(equation = "x^2") {
-//   c.clearRect(0, 0, width, height);
-//   drawBackground(c, width, height);
-//   c.strokeStyle = "rgba(0, 0, 0, 0.9)";
-
-//   c.beginPath();
-//   for (let i = -20; i < 20; i = i + 0.1) {
-//     parser.set("x", i);
-//     let y;
-//     try {
-//       y = parser.eval(equation);
-//     } catch (e) {
-//       console.log(e);
-//     }
-//     draw(i, y);
-//   }
-
-//   function draw(x, y) {
-//     let calculatedX = originX + x * 20;
-//     let calculatedY = originY + -y * 20;
-//     c.lineTo(calculatedX, calculatedY);
-//   }
-//   c.stroke();
-//   c.closePath();
-// }
-
-// drawGraph();
