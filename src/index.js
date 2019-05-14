@@ -8,7 +8,7 @@ const { trackCanvasMouse, drawBackground } = require("./utils");
 const body = document.querySelector("body");
 disableBodyScroll(body);
 
-function Graph(
+module.exports = function Graph(
   canvas,
   options = { width: 520, height: 520, enableCoords: true }
 ) {
@@ -23,7 +23,7 @@ function Graph(
 
   drawBackground(c, width, height);
 
-  this.drawGraph = function(equation = "x^2") {
+  (this.drawGraph = function(equation = "x^2") {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
     c.strokeStyle = "rgba(0, 0, 0, 0.9)";
@@ -43,7 +43,7 @@ function Graph(
         try {
           y = parser.eval(equation);
         } catch (e) {
-          console.log(e);
+          return;
         }
         draw(i, y);
       }
@@ -57,9 +57,9 @@ function Graph(
       c.stroke();
     }
     c.closePath();
-  };
 
-  this.drawGraph();
+    //immediately invoke the function (IIFE)
+  })();
 
   if (enableCoords) {
     this.canvas.addEventListener("mousemove", e => {
@@ -67,27 +67,32 @@ function Graph(
     });
   }
 
-  this.bindInput = function(element) {
-    element.addEventListener("input", () => {
-      this.drawGraph(element.value);
-    });
-  };
-
-  this.bindInputs = function(elements) {
-    let inputs = [];
-    let elementInputs = {};
-    elements.forEach(element => (elementInputs[element.id] = element.value));
-    elements.forEach(element =>
-      element.addEventListener("input", e => {
-        elementInputs[e.target.id] = e.target.value;
-        this.drawGraph(
-          Object.keys(elementInputs).map(key => elementInputs[key])
-        );
-      })
+  this.bindInput = function(element, errCallback) {
+    element.addEventListener("input", e =>
+      this.inputEventListener(e, element, errCallback)
     );
   };
-}
 
-new Graph(document.querySelector("canvas")).bindInputs(
-  document.querySelectorAll("input")
-);
+  this.bindInputs = function(elements, errCallback) {
+    elements.forEach(element => {
+      element.addEventListener("input", e =>
+        this.inputEventListener(e, element, errCallback)
+      );
+    });
+  };
+  let elementInputs = {};
+
+  this.inputEventListener = function(e, element, errCallback) {
+    elementInputs[e.target.id] = e.target.value;
+    Object.keys(elementInputs).forEach(input => {
+      try {
+        parser.set("x", Math.random());
+        parser.eval(elementInputs[input]);
+      } catch (e) {
+        return errCallback({ [element.id]: e });
+      }
+      errCallback(undefined);
+    });
+    this.drawGraph(Object.keys(elementInputs).map(key => elementInputs[key]));
+  };
+};
