@@ -28,6 +28,7 @@ module.exports = function Graph(
   (this.drawGraph = function(equation = "x^2") {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
+    
     c.strokeStyle = "rgba(0, 0, 0, 0.9)";
 
     // if equation is single string calculate once, if it is an array loop throught to calculate all of them
@@ -39,7 +40,8 @@ module.exports = function Graph(
 
     function calculate(equation) {
       c.beginPath();
-      for (let i = -20; i < 20; i = i + 0.1) {
+      c.setTransform(1, 0, 0, 1, 0.5, 0.5); // not so useful for the curve itself
+      for (let i = -50; i < 50; i = i + 0.1) {
         parser.set("x", i);
         let y;
         try {
@@ -47,6 +49,7 @@ module.exports = function Graph(
         } catch (e) {
           return;
         }
+
         draw(i, y);
       }
     }

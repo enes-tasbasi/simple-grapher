@@ -43,7 +43,7 @@ const trackCanvasMouse = (e, canvas, originX, originY) => {
 const drawBackground = (c, width, height) => {
   c.lineWidth = 1;
 
-  c.strokeStyle = "rgba(0, 0, 0, 0.8)";
+  c.strokeStyle = "rgba(0, 0, 0, 0.9)";
   c.beginPath();
   c.moveTo(0, height / 2);
   c.lineTo(width, height / 2);
@@ -53,7 +53,7 @@ const drawBackground = (c, width, height) => {
   // draw horizontal lines
   let horLineCount = 0;
   for (let i = height / 2; i > 0; i--) {
-    c.strokeStyle = "rgba(0,0,0,0.3)";
+    c.strokeStyle = "rgba(0,0,0,0.2)";
 
     horLineCount++;
     if (horLineCount == 20) {
@@ -68,7 +68,7 @@ const drawBackground = (c, width, height) => {
 
   horLineCount = 0;
   for (let i = height / 2; i < height; i++) {
-    c.strokeStyle = "rgba(0,0,0,0.3)";
+    c.strokeStyle = "rgba(0,0,0,0.2)";
 
     horLineCount++;
     if (horLineCount == 20) {
@@ -81,7 +81,7 @@ const drawBackground = (c, width, height) => {
     }
   }
 
-  c.strokeStyle = "rgba(0, 0, 0, 0.8)";
+  c.strokeStyle = "rgba(0, 0, 0, 0.9)";
   c.beginPath();
   c.moveTo(width / 2, 0);
   c.lineTo(width / 2, height);
@@ -91,7 +91,7 @@ const drawBackground = (c, width, height) => {
   let verLineCount = 0;
   // draw vertical lines
   for (let a = width / 2; a > 0; a--) {
-    c.strokeStyle = "rgba(0,0,0,0.3)";
+    c.strokeStyle = "rgba(0,0,0,0.2)";
     verLineCount++;
     if (verLineCount == 20) {
       c.beginPath();
@@ -106,7 +106,7 @@ const drawBackground = (c, width, height) => {
   verLineCount = 0;
   // draw vertical lines
   for (let a = width / 2; a < width; a++) {
-    c.strokeStyle = "rgba(0,0,0,0.3)";
+    c.strokeStyle = "rgba(0,0,0,0.2)";
     verLineCount++;
     if (verLineCount == 20) {
       c.beginPath();

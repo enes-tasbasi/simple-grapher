@@ -1,8 +1,8 @@
 const Graph = require("./index.js");
 
 new Graph(document.querySelector("canvas"), {
-  height: 291,
-  width: 231,
+  height: window.innerHeight,
+  width: 900,
   enableCoords: true
 }).bindInputs(document.querySelectorAll("input"), e => {
   if (e != undefined) {
