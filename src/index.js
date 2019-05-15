@@ -13,10 +13,12 @@ module.exports = function Graph(
   options = { width: 520, height: 520, enableCoords: true }
 ) {
   let { width, height, enableCoords } = options;
-
+  width = width || 520;
+  height = height || 520;
+  enableCoords = enableCoords || true;
   this.canvas = canvas;
-  this.canvas.width = width ? width : 520;
-  this.canvas.height = height ? height : 520;
+  this.canvas.width = width;
+  this.canvas.height = height;
   let originX = this.canvas.width / 2;
   let originY = this.canvas.height / 2;
   let c = this.canvas.getContext("2d");

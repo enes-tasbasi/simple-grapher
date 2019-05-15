@@ -1,6 +1,19 @@
-// let coordinates = document.querySelector(".coordinates");
 let coordinates = document.createElement("div");
-coordinates.className = "coordinates";
+
+Object.assign(coordinates.style, {
+  "z-index": -1,
+  position: "absolute",
+  height: "40px",
+  width: "fit-content",
+  "background-color": "rgba(20, 20, 20, 0.3)",
+  "border-radius": "10px",
+  display: "none",
+  "text-align": "center",
+  padding: "12px",
+  "box-sizing": "border-box",
+  "font-size": "1em",
+  display: "none"
+});
 
 let timeout;
 const trackCanvasMouse = (e, canvas, originX, originY) => {
@@ -28,32 +41,80 @@ const trackCanvasMouse = (e, canvas, originX, originY) => {
 };
 
 const drawBackground = (c, width, height) => {
-  for (let i = 0; i < width; i++) {
-    c.lineWidth = 1;
+  c.lineWidth = 1;
+
+  c.strokeStyle = "rgba(0, 0, 0, 0.8)";
+  c.beginPath();
+  c.moveTo(0, height / 2);
+  c.lineTo(width, height / 2);
+  c.stroke();
+  c.closePath();
+
+  // draw horizontal lines
+  let horLineCount = 0;
+  for (let i = height / 2; i > 0; i--) {
     c.strokeStyle = "rgba(0,0,0,0.3)";
-    if (i % (width / 2) == 0) {
-      c.strokeStyle = "rgba(0, 0, 0, 0.8)";
-    }
-    if (i % 20 == 0) {
+
+    horLineCount++;
+    if (horLineCount == 20) {
       c.beginPath();
       c.moveTo(0, i);
       c.lineTo(width, i);
       c.stroke();
       c.closePath();
+      horLineCount = 0;
     }
   }
 
-  for (let a = 0; a < height; a++) {
+  horLineCount = 0;
+  for (let i = height / 2; i < height; i++) {
     c.strokeStyle = "rgba(0,0,0,0.3)";
-    if (a % (height / 2) == 0) {
-      c.strokeStyle = "rgba(0, 0, 0, 0.8)";
+
+    horLineCount++;
+    if (horLineCount == 20) {
+      c.beginPath();
+      c.moveTo(0, i);
+      c.lineTo(width, i);
+      c.stroke();
+      c.closePath();
+      horLineCount = 0;
     }
-    if (a % 20 == 0) {
+  }
+
+  c.strokeStyle = "rgba(0, 0, 0, 0.8)";
+  c.beginPath();
+  c.moveTo(width / 2, 0);
+  c.lineTo(width / 2, height);
+  c.stroke();
+  c.closePath();
+
+  let verLineCount = 0;
+  // draw vertical lines
+  for (let a = width / 2; a > 0; a--) {
+    c.strokeStyle = "rgba(0,0,0,0.3)";
+    verLineCount++;
+    if (verLineCount == 20) {
       c.beginPath();
       c.moveTo(a, 0);
       c.lineTo(a, height);
       c.stroke();
       c.closePath();
+      verLineCount = 0;
+    }
+  }
+
+  verLineCount = 0;
+  // draw vertical lines
+  for (let a = width / 2; a < width; a++) {
+    c.strokeStyle = "rgba(0,0,0,0.3)";
+    verLineCount++;
+    if (verLineCount == 20) {
+      c.beginPath();
+      c.moveTo(a, 0);
+      c.lineTo(a, height);
+      c.stroke();
+      c.closePath();
+      verLineCount = 0;
     }
   }
 };
