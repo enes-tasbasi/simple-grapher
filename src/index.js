@@ -25,11 +25,17 @@ module.exports = function Graph(
 
   drawBackground(c, width, height);
 
-  (this.drawGraph = function(equation = "x^2") {
+  (this.drawGraph = function(equation = "") {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
-    
-    c.strokeStyle = "rgba(0, 0, 0, 0.9)";
+
+    const getRandomInt = max => {
+      return Math.floor(Math.random() * Math.floor(max));
+    };
+
+    c.strokeStyle = `rgba(${getRandomInt(250)}, ${getRandomInt(
+      250
+    )}, ${getRandomInt(250)}, 0.9)`;
 
     // if equation is single string calculate once, if it is an array loop throught to calculate all of them
     if (typeof equation == "string") {
@@ -41,7 +47,7 @@ module.exports = function Graph(
     function calculate(equation) {
       c.beginPath();
       c.setTransform(1, 0, 0, 1, 0.5, 0.5); // not so useful for the curve itself
-      for (let i = -50; i < 50; i = i + 0.1) {
+      for (let i = -width / 3; i < width / 3; i = i + 0.1) {
         parser.set("x", i);
         let y;
         try {
@@ -49,7 +55,6 @@ module.exports = function Graph(
         } catch (e) {
           return;
         }
-
         draw(i, y);
       }
     }
@@ -57,7 +62,7 @@ module.exports = function Graph(
     function draw(x, y) {
       let calculatedX = originX + x * 20;
       let calculatedY = originY + -y * 20;
-      c.lineWidth = 0.01;
+      c.lineWidth = 0.02;
       c.lineTo(calculatedX, calculatedY);
       c.stroke();
     }
@@ -72,13 +77,18 @@ module.exports = function Graph(
     });
   }
 
+  let inputs = [];
+
   this.bindInput = function(element, errCallback) {
+    inputs = [...inputs, element];
     element.addEventListener("input", e =>
       this.inputEventListener(e, element, errCallback)
     );
   };
 
   this.bindInputs = function(elements, errCallback) {
+    inputs = [...inputs, ...elements];
+
     elements.forEach(element => {
       element.addEventListener("input", e =>
         this.inputEventListener(e, element, errCallback)
@@ -93,11 +103,18 @@ module.exports = function Graph(
       try {
         parser.set("x", Math.random());
         parser.eval(elementInputs[input]);
-      } catch (e) {
-        return errCallback({ [element.id]: e });
+      } catch (err) {
+        return errCallback({ [element.id]: err });
       }
       errCallback(undefined);
     });
     this.drawGraph(Object.keys(elementInputs).map(key => elementInputs[key]));
+  };
+
+  this.inputRemoved = function(elem) {
+    // remove the input from the inputs array and rerender the input valuse
+    inputs = inputs.filter(input => input != elem);
+    let inputVals = inputs.map(input => input.value);
+    this.drawGraph(inputVals);
   };
 };
