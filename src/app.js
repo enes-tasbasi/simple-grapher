@@ -7,10 +7,10 @@ const panel = document.querySelector("div.inputs");
 const newInputButton = document.querySelector("div.newInputButton");
 newInputButton.addEventListener("click", addNewInput);
 
-function handleInputError(e) {
-  if (e != undefined) {
-    const errorParagraph = document.getElementById(`e${Object.keys(e)[0]}`);
-    const error = e[Object.keys(e)[0]];
+function handleInputError(err) {
+  if (err != undefined) {
+    const errorParagraph = document.getElementById(`e${Object.keys(err)[0]}`);
+    const error = err[Object.keys(err)[0]];
     errorParagraph.innerText = error;
   } else {
     document
@@ -32,31 +32,29 @@ const constructInputs = (function(inputElements) {
 })(inputElements);
 
 function createInput(id) {
-  let newInput = document.createElement("input");
-  newInput.id = id;
-  newInput.type = "text";
-  newInput.placeholder = "Type an Equation";
+  let input = document.createElement("input");
+  input.id = id;
+  input.type = "text";
+  input.placeholder = "Type an Equation";
 
-  TheGraph.bindInput(newInput, handleInputError);
+  TheGraph.bindInput(input, handleInputError);
 
-  let newErrorParagraph = document.createElement("p");
-  newErrorParagraph.id = `e${id}`;
-  newErrorParagraph.className = "errorParagraph";
+  let errorParagraph = document.createElement("p");
+  errorParagraph.id = `e${id}`;
+  errorParagraph.className = "errorParagraph";
 
-  let newSpan = document.createElement("span");
+  let span = document.createElement("span");
 
-  let newDeleteButton = document.createElement("div");
-  newDeleteButton.innerText = "X";
-  newDeleteButton.id = `d${id}`;
-  newDeleteButton.className = "inputDeleteButton";
-  newDeleteButton.addEventListener("click", () =>
-    deleteInput(newSpan, newInput)
-  );
+  let deleteButton = document.createElement("div");
+  deleteButton.innerText = "X";
+  deleteButton.id = `d${id}`;
+  deleteButton.className = "inputDeleteButton";
+  deleteButton.addEventListener("click", () => deleteInput(span, input));
 
-  newSpan.appendChild(newInput);
-  newSpan.appendChild(newDeleteButton);
-  newSpan.appendChild(newErrorParagraph);
-  panel.appendChild(newSpan);
+  span.appendChild(input);
+  span.appendChild(deleteButton);
+  span.appendChild(errorParagraph);
+  panel.appendChild(span);
 }
 
 function deleteInput(span, input) {

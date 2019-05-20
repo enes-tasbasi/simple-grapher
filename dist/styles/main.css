@@ -7,6 +7,20 @@
   --main-color: #4caf50;
 }
 
+div,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+button,
+input {
+  font-family: "Nunito", sans-serif;
+}
+
 div.container {
   display: flex;
   height: 100vh;
@@ -15,11 +29,6 @@ div.container {
 
 div.canvasContainer {
   align-self: center;
-}
-
-canvas {
-  max-width: auto;
-  outline: 1px solid #283028;
 }
 
 div.panel {
@@ -31,6 +40,7 @@ div.panel {
   padding: 0 8px;
   box-sizing: border-box;
   flex-shrink: 0;
+  overflow-y: scroll;
 }
 
 div.panel span {
@@ -93,7 +103,7 @@ div.panel div.newInputButton {
   box-sizing: border-box;
   cursor: pointer;
   transition: 100ms ease-in;
-  margin: 5px 0;
+  margin: 5px 0 40px 0;
 }
 
 div.panel div.newInputButton:hover {

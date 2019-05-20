@@ -25,7 +25,9 @@ module.exports = function Graph(
 
   drawBackground(c, width, height);
 
-  (this.drawGraph = function(equation = "") {
+  let equationHistory = {};
+
+  this.drawGraph = function(equation) {
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
 
@@ -45,17 +47,26 @@ module.exports = function Graph(
     }
 
     function calculate(equation) {
-      c.beginPath();
-      c.setTransform(1, 0, 0, 1, 0.5, 0.5); // not so useful for the curve itself
-      for (let i = -width / 3; i < width / 3; i = i + 0.1) {
-        parser.set("x", i);
-        let y;
-        try {
-          y = parser.eval(equation);
-        } catch (e) {
-          return;
+      if (equation == "") return;
+
+      if (!Object.keys(equationHistory).includes(equation)) {
+        let coordsForEquation = [];
+
+        c.beginPath();
+        for (let x = -50; x < 50; x = x + 0.1) {
+          parser.set("x", x);
+          let y;
+          try {
+            y = parser.eval(equation);
+          } catch (e) {
+            return;
+          }
+          let coords = draw(x.toFixed(2), y.toFixed(2));
+          console.log(coords);
+          coordsForEquation = [...coordsForEquation, coords];
         }
-        draw(i, y);
+        equationHistory[equation] = coordsForEquation;
+        console.log(equationHistory);
       }
     }
 
@@ -65,11 +76,14 @@ module.exports = function Graph(
       c.lineWidth = 0.02;
       c.lineTo(calculatedX, calculatedY);
       c.stroke();
+
+      return { x, y };
     }
+
     c.closePath();
 
     //immediately invoke the function (IIFE)
-  })();
+  };
 
   if (enableCoords) {
     this.canvas.addEventListener("mousemove", e => {
@@ -95,20 +109,34 @@ module.exports = function Graph(
       );
     });
   };
+
+  // Carries each input's id and its value
   let elementInputs = {};
+
+  // TODO: fix the rendering of wrong functions
 
   this.inputEventListener = function(e, element, errCallback) {
     elementInputs[e.target.id] = e.target.value;
-    Object.keys(elementInputs).forEach(input => {
-      try {
-        parser.set("x", Math.random());
-        parser.eval(elementInputs[input]);
-      } catch (err) {
-        return errCallback({ [element.id]: err });
+
+    const testEquation = equation => {
+      parser.set("x", Math.round(Math.random() * 100));
+      let evalValue = parser.eval(equation);
+      if (typeof evalValue == "object") {
+        throw new Error(`Unable to parse ${equation}`);
       }
-      errCallback(undefined);
-    });
-    this.drawGraph(Object.keys(elementInputs).map(key => elementInputs[key]));
+      return evalValue;
+    };
+
+    try {
+      testEquation(e.target.value);
+    } catch (err) {
+      return errCallback({ [element.id]: err });
+    }
+    errCallback(undefined);
+
+    let equationsToDraw = this.drawGraph(
+      Object.keys(elementInputs).map(key => elementInputs[key])
+    );
   };
 
   this.inputRemoved = function(elem) {
