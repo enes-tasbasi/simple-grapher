@@ -15,7 +15,7 @@ module.exports = function Graph(
   let { width, height, enableCoords } = options;
   width = width || 520;
   height = height || 520;
-  enableCoords = enableCoords || true;
+  if (enableCoords == undefined) enableCoords = true;
   this.canvas = canvas;
   this.canvas.width = width;
   this.canvas.height = height;
@@ -31,13 +31,9 @@ module.exports = function Graph(
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
 
-    const getRandomInt = max => {
-      return Math.floor(Math.random() * Math.floor(max));
+    const getRandomColor = () => {
+      return Math.floor(Math.random() * 250);
     };
-
-    c.strokeStyle = `rgba(${getRandomInt(250)}, ${getRandomInt(
-      250
-    )}, ${getRandomInt(250)}, 0.9)`;
 
     // if equation is single string calculate once, if it is an array loop throught to calculate all of them
     if (typeof equation == "string") {
@@ -49,11 +45,13 @@ module.exports = function Graph(
     function calculate(equation) {
       if (equation == "") return;
 
+      c.strokeStyle = `rgba(240, 40, 40, 0.9)`;
+
       if (!Object.keys(equationHistory).includes(equation)) {
         let coordsForEquation = [];
 
         c.beginPath();
-        for (let x = -50; x < 50; x = x + 0.1) {
+        for (let x = -60; x < 60; x = x + 0.1) {
           parser.set("x", x);
           let y;
           try {
@@ -61,19 +59,28 @@ module.exports = function Graph(
           } catch (e) {
             return;
           }
+
+          if (typeof y != "number") return;
           let coords = draw(x.toFixed(2), y.toFixed(2));
-          console.log(coords);
           coordsForEquation = [...coordsForEquation, coords];
         }
         equationHistory[equation] = coordsForEquation;
-        console.log(equationHistory);
+      } else {
+        c.beginPath();
+
+        // get the current equation from the equation history, so we don't have to process the same thing twice.
+        let revivedEquation = equationHistory[equation];
+        for (let i = 0; i < revivedEquation.length; i++) {
+          draw(revivedEquation[i].x, revivedEquation[i].y);
+        }
       }
     }
 
     function draw(x, y) {
       let calculatedX = originX + x * 20;
       let calculatedY = originY + -y * 20;
-      c.lineWidth = 0.02;
+
+      c.lineWidth = 0.1;
       c.lineTo(calculatedX, calculatedY);
       c.stroke();
 
@@ -81,8 +88,6 @@ module.exports = function Graph(
     }
 
     c.closePath();
-
-    //immediately invoke the function (IIFE)
   };
 
   if (enableCoords) {
@@ -127,16 +132,21 @@ module.exports = function Graph(
       return evalValue;
     };
 
+    let equationsIsDrawable = true;
     try {
       testEquation(e.target.value);
     } catch (err) {
+      equationsIsDrawable = false;
       return errCallback({ [element.id]: err });
     }
     errCallback(undefined);
 
-    let equationsToDraw = this.drawGraph(
-      Object.keys(elementInputs).map(key => elementInputs[key])
-    );
+    if (equationsIsDrawable) {
+      let equationsToDraw = this.drawGraph(
+        Object.keys(elementInputs).map(key => elementInputs[key])
+      );
+    }
+    c.beginPath();
   };
 
   this.inputRemoved = function(elem) {
