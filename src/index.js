@@ -122,6 +122,7 @@ module.exports = function Graph(
 
   this.inputEventListener = function(e, element, errCallback) {
     elementInputs[e.target.id] = e.target.value;
+    console.log(e);
 
     const testEquation = equation => {
       parser.set("x", Math.round(Math.random() * 100));
