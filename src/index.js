@@ -8,26 +8,27 @@ const { trackCanvasMouse, drawBackground } = require("./utils");
 const body = document.querySelector("body");
 disableBodyScroll(body);
 
-module.exports = function Graph(
-  canvas,
-  options = { width: 520, height: 520, enableCoords: true }
-) {
+module.exports = function Graph(canvas, options) {
   let { width, height, enableCoords } = options;
+
+  // Set the default options, if the user has not passed them to the func.
   width = width || 520;
   height = height || 520;
   if (enableCoords == undefined) enableCoords = true;
-  this.canvas = canvas;
-  this.canvas.width = width;
-  this.canvas.height = height;
-  let originX = this.canvas.width / 2;
-  let originY = this.canvas.height / 2;
-  let c = this.canvas.getContext("2d");
 
+  canvas.width = width;
+  canvas.height = height;
+  let originX = canvas.width / 2;
+  let originY = canvas.height / 2;
+  let c = canvas.getContext("2d");
   drawBackground(c, width, height);
 
+  // Stores the previous equations. Its purpose is to prevent the device to make the same calculations
+  // multiple times as it will take more CPU power.
   let equationHistory = {};
 
-  this.drawGraph = function(equation) {
+  function drawGraph(equation, errCallback) {
+    // clear the canvas and draw the lines again
     c.clearRect(0, 0, width, height);
     drawBackground(c, width, height);
 
@@ -44,6 +45,12 @@ module.exports = function Graph(
 
     function calculate(equation) {
       if (equation == "") return;
+
+      try {
+        testEquation(equation);
+      } catch (err) {
+        return errCallback(err.message);
+      }
 
       c.strokeStyle = `rgba(240, 40, 40, 0.9)`;
 
@@ -88,29 +95,27 @@ module.exports = function Graph(
     }
 
     c.closePath();
-  };
+  }
 
   if (enableCoords) {
-    this.canvas.addEventListener("mousemove", e => {
+    canvas.addEventListener("mousemove", e => {
       trackCanvasMouse(e, canvas, originX, originY);
     });
   }
 
   let inputs = [];
 
-  this.bindInput = function(element, errCallback) {
+  const bindInput = function(element, errCallback) {
     inputs = [...inputs, element];
-    element.addEventListener("input", e =>
-      this.inputEventListener(e, element, errCallback)
-    );
+    element.addEventListener("input", e => inputEventListener(e, errCallback));
   };
 
-  this.bindInputs = function(elements, errCallback) {
+  const bindInputs = function(elements, errCallback) {
     inputs = [...inputs, ...elements];
 
     elements.forEach(element => {
       element.addEventListener("input", e =>
-        this.inputEventListener(e, element, errCallback)
+        inputEventListener(e, errCallback)
       );
     });
   };
@@ -118,41 +123,52 @@ module.exports = function Graph(
   // Carries each input's id and its value
   let elementInputs = {};
 
+  function testEquation(equation) {
+    parser.set("x", Math.round(Math.random() * 100));
+    let evalValue = parser.eval(equation);
+
+    // We have to check if the parser.eval() returns and object. If it does than throw an error
+    if (typeof evalValue == "object") {
+      throw new Error(`Unable to parse ${equation}`);
+    }
+    return evalValue;
+  }
+
   // TODO: fix the rendering of wrong functions
 
-  this.inputEventListener = function(e, element, errCallback) {
+  function inputEventListener(e, errCallback) {
     elementInputs[e.target.id] = e.target.value;
 
-    const testEquation = equation => {
-      parser.set("x", Math.round(Math.random() * 100));
-      let evalValue = parser.eval(equation);
-      if (typeof evalValue == "object") {
-        throw new Error(`Unable to parse ${equation}`);
-      }
-      return evalValue;
-    };
+    // Test the inputed equation, if there is an error throw an error.
 
     let equationsIsDrawable = true;
     try {
       testEquation(e.target.value);
     } catch (err) {
       equationsIsDrawable = false;
-      return errCallback({ [element.id]: err });
+      return errCallback({ [e.target.id]: err.message });
     }
     errCallback(undefined);
 
     if (equationsIsDrawable) {
-      let equationsToDraw = this.drawGraph(
+      let equationsToDraw = drawGraph(
         Object.keys(elementInputs).map(key => elementInputs[key])
       );
     }
     c.beginPath();
-  };
+  }
 
-  this.inputRemoved = function(elem) {
+  function inputRemoved(elem) {
     // remove the input from the inputs array and rerender the input valuse
     inputs = inputs.filter(input => input != elem);
     let inputVals = inputs.map(input => input.value);
-    this.drawGraph(inputVals);
+    drawGraph(inputVals);
+  }
+
+  return {
+    drawGraph,
+    bindInput,
+    bindInputs,
+    inputRemoved
   };
 };
