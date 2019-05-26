@@ -1,6 +1,6 @@
 {
   "name": "simple-grapher",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Simple graphing utily, utilizes the HTML canvas and the mathjs library to graph functions",
   "author": "Enes Tasbasi",
   "license": "ISC",
