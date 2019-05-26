@@ -30,7 +30,7 @@ const MyGraph = new Graph(document.querySelector("canvas"), {
 MyGraph.drawGraph("x^2");
 ```
 
-![](https://github.com/etasbasi/Grapher/blob/master/snapshots/example.png?raw=true "Example 1")
+![](https://github.com/etasbasi/simple-grapher/blob/gh-pages/snapshots/example.png?raw=true "Example 1")
 
 Graph constructor accepts two parameters `new Graph(canvas element, options)`
 Options can include:
@@ -61,7 +61,7 @@ MyGraph.bindInput(document.querySelector("input"), err => {
 });
 ```
 
-![](https://github.com/etasbasi/Grapher/blob/master/snapshots/example2.png?raw=true "Example 2")
+![](https://github.com/etasbasi/simple-grapher/blob/gh-pages/snapshots/example2.png?raw=true "Example 2")
 
 bindInput() takes an input element or an array of input elements as the first parameter. **Each input element has to have an id**. The second parameter is the error callback. When the given equation has syntax mistakes the err value will return an object with the input's id as the key and the error as the value.
 
