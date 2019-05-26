@@ -32,14 +32,13 @@ MyGraph.drawGraph("x^2");
 
 ![](https://github.com/etasbasi/simple-grapher/blob/gh-pages/snapshots/example.png?raw=true "Example 1")
 
-Graph constructor accepts two parameters `new Graph(canvas element, options)`
+Graph constructor accepts two parameters `new Graph(canvas, options)`
+
 Options can include:
 
-- width: (number, specifies canvas' width) - default: 520
-- height (number, specifies canvas' height) - default: 520
-- enableCoords (boolean, when true, the x - y coordinates of the graph will be visible when hovered) - default: true
-
-drawGraph() accepts a string or array of strings to draw on the graph.
+- width: number - default: 520
+- height: number - default: 520
+- enableCoords: boolean (when true, the x - y coordinates of the graph will be visible when hovered) - default: true
 
 ### Binding an input element to the graph
 
@@ -65,6 +64,32 @@ MyGraph.bindInput(document.querySelector("input"), err => {
 
 bindInput() takes an input element or an array of input elements as the first parameter. **Each input element has to have an id**. The second parameter is the error callback. When the given equation has syntax mistakes the err value will return an object with the input's id as the key and the error as the value.
 
+## Methods
+
+### `.drawGraph(equation: String | Array, errCallback: function)`
+
+Draws an equation(s) to the graph. Can take an equation string or an array of equations to draw on the board as the first parameter. Second argument is an error callback that will return an error message, if there is a persing error.
+
+### `.bindInput(input: HTML element, errCallback: function)`
+
+Binds an input element's values to the `drawGraph()` method. First parameter is an HTML input elemement. The input element has to have an **id**. The second parameter is an error callback, it will return an object with the input's id as the key and the error message as the value.
+
+### `.bindInputs(inputs: Array, errCallback: function)`
+
+Same as `.bindInput()`, except takes an array of inputs to bind to graph.
+
+### `.inputRemoved(input: HTML element)`
+
+Stops listening to events from the specified input.
+
 ## Contributing
+
+Any help is much appreciated.
+
+Some improvement suggestions:
+
+- Add tests
+- Improve code readability
+- Convert the `drawGraph()` to an async function.
 
 Fork the repo and check the issues tab, to start contributing.
