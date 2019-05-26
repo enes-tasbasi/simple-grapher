@@ -20,6 +20,8 @@ module.exports = function Graph(canvas, options) {
   canvas.height = height;
   let originX = canvas.width / 2;
   let originY = canvas.height / 2;
+
+  // Get 2d context and draw the background
   let c = canvas.getContext("2d");
   drawBackground(c, width, height);
 
@@ -68,8 +70,17 @@ module.exports = function Graph(canvas, options) {
           }
 
           if (typeof y != "number") return;
-          let coords = draw(x.toFixed(2), y.toFixed(2));
-          coordsForEquation = [...coordsForEquation, coords];
+
+          // Reduce the coordds to only 2 decimals and get the calculated coordinates
+          let calculatedCoords = calcCoords(x.toFixed(2), y.toFixed(2));
+
+          draw(calculatedCoords.x, calculatedCoords.y);
+
+          // Add the calculated coordinates to an array to pass it to the equationHistory object
+          coordsForEquation = [
+            ...coordsForEquation,
+            { x: calculatedCoords.x, y: calculatedCoords.y }
+          ];
         }
         equationHistory[equation] = coordsForEquation;
       } else {
@@ -78,20 +89,22 @@ module.exports = function Graph(canvas, options) {
         // get the current equation from the equation history, so we don't have to process the same thing twice.
         let revivedEquation = equationHistory[equation];
         for (let i = 0; i < revivedEquation.length; i++) {
-          draw(revivedEquation[i].x, revivedEquation[i].y);
+          draw(revivedEquation[i].x, revivedEquation[i].y, false);
         }
       }
     }
 
-    function draw(x, y) {
+    function calcCoords(x, y) {
       let calculatedX = originX + x * 20;
       let calculatedY = originY + -y * 20;
 
-      c.lineWidth = 0.1;
-      c.lineTo(calculatedX, calculatedY);
-      c.stroke();
+      return { x: calculatedX, y: calculatedY };
+    }
 
-      return { x, y };
+    function draw(x, y) {
+      c.lineWidth = 0.1;
+      c.lineTo(x, y);
+      c.stroke();
     }
 
     c.closePath();
@@ -141,19 +154,18 @@ module.exports = function Graph(canvas, options) {
 
     // Test the inputed equation, if there is an error throw an error.
 
-    let equationsIsDrawable = true;
+    let equationIsDrawable = true;
     try {
       testEquation(e.target.value);
     } catch (err) {
-      equationsIsDrawable = false;
+      equationIsDrawable = false;
       return errCallback({ [e.target.id]: err.message });
     }
     errCallback(undefined);
 
-    if (equationsIsDrawable) {
-      let equationsToDraw = drawGraph(
-        Object.keys(elementInputs).map(key => elementInputs[key])
-      );
+    if (equationIsDrawable) {
+      // Get all the values from the input elements and pass to drawGraph as an array
+      drawGraph(Object.keys(elementInputs).map(key => elementInputs[key]));
     }
     c.beginPath();
   }
