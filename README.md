@@ -62,7 +62,7 @@ MyGraph.bindInput(document.querySelector("input"), err => {
 
 ![](https://github.com/etasbasi/simple-grapher/blob/gh-pages/snapshots/example2.png?raw=true "Example 2")
 
-bindInput() takes an input element or an array of input elements as the first parameter. **Each input element has to have an id**. The second parameter is the error callback. When the given equation has syntax mistakes the err value will return an object with the input's id as the key and the error as the value.
+Binds an input element to the graph.
 
 ## Methods
 
