@@ -1,12 +1,7 @@
 const mathjs = require("mathjs");
 const parser = mathjs.parser();
-const { disableBodyScroll } = require("body-scroll-lock");
 
 const { trackCanvasMouse, drawBackground } = require("./utils");
-
-// Disable scroll on mobile phones
-const body = document.querySelector("body");
-disableBodyScroll(body);
 
 module.exports = function Graph(canvas, options) {
   let { width, height, enableCoords } = options;
