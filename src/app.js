@@ -20,8 +20,8 @@ function handleInputError(err) {
 }
 
 let TheGraph = new Graph(document.querySelector("canvas"), {
-  height: window.innerHeight - 20,
-  width: 800,
+  // height: window.innerHeight - 40,
+  // width: 800,
   enableCoords: true
 });
 
