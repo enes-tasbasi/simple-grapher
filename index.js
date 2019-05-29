@@ -13,6 +13,8 @@ module.exports = function Graph(canvas, options) {
 
   canvas.width = width;
   canvas.height = height;
+
+  // get the origin (0, 0)
   let originX = canvas.width / 2;
   let originY = canvas.height / 2;
 
@@ -166,6 +168,8 @@ module.exports = function Graph(canvas, options) {
   }
 
   function inputRemoved(elem) {
+    elem.removeEventListener("input", inputEventListener);
+
     // remove the input from the inputs array and rerender the input valuse
     inputs = inputs.filter(input => input != elem);
     let inputVals = inputs.map(input => input.value);

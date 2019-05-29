@@ -7,7 +7,6 @@ Object.assign(coordinates.style, {
   width: "fit-content",
   "background-color": "rgba(20, 20, 20, 0.3)",
   "border-radius": "10px",
-  display: "none",
   "text-align": "center",
   padding: "12px",
   "box-sizing": "border-box",
@@ -15,9 +14,10 @@ Object.assign(coordinates.style, {
   display: "none"
 });
 
+document.querySelector("body").appendChild(coordinates);
+
 let timeout;
 const trackCanvasMouse = (e, canvas, originX, originY) => {
-  canvas.parentNode.insertBefore(coordinates, canvas.nextSibling);
   let coordsX = e.clientX;
   let coordsY = e.clientY;
   let x = e.offsetX;
