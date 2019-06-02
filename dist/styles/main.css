@@ -1,12 +1,12 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
-  --main-color: rgb(223, 169, 224);
-  --secondary-color: #4caf50;
+    --main-color: rgb(223, 169, 224);
+    --secondary-color: #4caf50;
 }
 
 div,
@@ -20,143 +20,142 @@ h6,
 span,
 button,
 input {
-  font-family: sans-serif;
+    font-family: sans-serif;
 }
 
 div.container {
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  justify-content: flex-start;
-  align-content: flex-start;
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    justify-content: flex-start;
+    align-content: flex-start;
 }
 
 div.canvasContainer {
-  margin: 10px 0;
-  position: relative;
-  height: 520px;
-  overflow: hidden;
+    margin: 10px 0;
+    position: relative;
+    height: 520px;
+    overflow: hidden;
 }
 
 div.panel {
-  width: 250px;
-  height: 100vh;
-  /* align-self: flex-start; */
-  background-color: var(--main-color);
-  height: 100%;
-  margin: 5px 20px 0 0;
-  padding: 0 8px;
-  box-sizing: border-box;
-  flex-shrink: 0;
-  overflow-y: scroll;
+    width: 250px;
+    height: 100vh;
+    background-color: var(--main-color);
+    height: 100%;
+    margin: 0 20px 0 0;
+    padding: 0 8px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    overflow-y: scroll;
 }
 
 div.panel span {
-  position: relative;
-  width: 100%;
-  height: 100%;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 div.panel span input {
-  margin: 5px 0 4px 0;
-  padding: 15px;
-  font-size: 1.1em;
-  width: 100%;
-  box-sizing: border-box;
-  transition: 5s ease-in;
+    margin: 5px 0 4px 0;
+    padding: 15px;
+    font-size: 1.1em;
+    width: 100%;
+    box-sizing: border-box;
+    transition: 5s ease-in;
 }
 
 div.panel span div.inputDeleteButton {
-  position: absolute;
-  width: 40px;
-  height: 51px;
-  top: -17.4px;
-  right: 2px;
-  font-family: "Nunito", sans-serif;
-  text-align: center;
-  color: var(--secondary-color);
-  padding: 8px;
-  font-size: 1.8em;
-  box-sizing: border-box;
-  /* background-color: rgba(20, 20, 20, 0.3); */
-  opacity: 0;
-  z-index: -1;
-  cursor: pointer;
+    position: absolute;
+    width: 40px;
+    height: 51px;
+    top: -17.4px;
+    right: 2px;
+    font-family: "Nunito", sans-serif;
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 8px;
+    font-size: 1.8em;
+    box-sizing: border-box;
+    /* background-color: rgba(20, 20, 20, 0.3); */
+    opacity: 0;
+    z-index: -1;
+    cursor: pointer;
 }
 
 /* When input is hovered upon, make deleteButton visible */
 div.panel span input:hover + div.inputDeleteButton {
-  opacity: 1;
-  z-index: 1;
+    opacity: 1;
+    z-index: 1;
 }
 
 /* Make sure the deleteButton stays visible, when it is being hovered upon */
 div.panel span div.inputDeleteButton:hover {
-  opacity: 1;
-  z-index: 1;
+    opacity: 1;
+    z-index: 1;
 }
 
 div.panel span p.errorParagraph {
-  color: red;
-  margin: 1px 0 5px 0;
-  font-size: 0.8em;
+    color: red;
+    margin: 1px 0 5px 0;
+    font-size: 0.8em;
 }
 
 div.panel div.newInputButton {
-  color: white;
-  width: 120px;
-  height: 40px;
-  background-color: var(--secondary-color);
-  text-align: center;
-  padding: 11px 0;
-  border-radius: 3px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: 100ms ease-in;
-  margin: 5px 0 40px 0;
+    color: white;
+    width: 120px;
+    height: 40px;
+    background-color: var(--secondary-color);
+    text-align: center;
+    padding: 11px 0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: 100ms ease-in;
+    margin: 5px 0 40px 0;
 }
 
 div.panel div.newInputButton:hover {
-  color: #4caf50;
-  background-color: white;
+    color: #4caf50;
+    background-color: white;
 }
 
 div.panel div.newInputButton:active {
-  color: #238028;
-  background-color: rgb(194, 194, 194);
+    color: #238028;
+    background-color: rgb(194, 194, 194);
 }
 
 @media screen and (max-width: 500px) {
-  div.canvasContainer {
-    z-index: -1;
-    align-self: flex-start;
-    position: relative;
-    top: -90px;
-    width: 800px;
-  }
+    div.canvasContainer {
+        z-index: -1;
+        align-self: flex-start;
+        position: relative;
+        top: -90px;
+        width: 800px;
+    }
 
-  div.canvasContainer canvas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+    div.canvasContainer canvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 
-  div.panel {
-    position: absolute;
-    bottom: 0;
-    height: 50%;
-    width: 100%;
-    background-color: var(--main-color);
-  }
+    div.panel {
+        position: absolute;
+        bottom: 0;
+        height: 50%;
+        width: 100%;
+        background-color: var(--main-color);
+    }
 
-  div.panel div.inputs {
-    width: 100%;
-  }
+    div.panel div.inputs {
+        width: 100%;
+    }
 
-  div.panel span input {
-    margin: 5px 0 4px 0;
-    padding: 15px;
-    font-size: 1.1em;
-  }
+    div.panel span input {
+        margin: 5px 0 4px 0;
+        padding: 15px;
+        font-size: 1.1em;
+    }
 }
