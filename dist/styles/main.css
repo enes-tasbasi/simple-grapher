@@ -23,6 +23,10 @@ input {
     font-family: sans-serif;
 }
 
+body {
+    overflow: hidden;
+}
+
 div.container {
     display: flex;
     height: 100vh;
@@ -34,7 +38,6 @@ div.container {
 div.canvasContainer {
     margin: 10px 0;
     position: relative;
-    height: 520px;
     overflow: hidden;
 }
 
@@ -130,8 +133,9 @@ div.panel div.newInputButton:active {
         z-index: -1;
         align-self: flex-start;
         position: relative;
-        top: -90px;
+        top: -65px;
         width: 800px;
+        height: 480px;
     }
 
     div.canvasContainer canvas {
@@ -143,13 +147,43 @@ div.panel div.newInputButton:active {
 
     div.panel {
         position: absolute;
-        bottom: 0;
-        height: 50%;
+        height: 50vh;
         width: 100%;
+        bottom: 0;
         background-color: var(--main-color);
     }
 
-    div.panel div.inputs {
+    div.panel div.slider {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        right: 4px;
+        height: 8px;
+        background-color: rgba(100, 100, 100, 0.7);
+        cursor: row-resize;
+        border-radius: 5px;
+        display: none;
+    }
+
+    div.panel .slider::before {
+        content: "";
+        height: 1px;
+        background-color: #000;
+        position: absolute;
+        top: 3px;
+        right: 10px;
+        left: 10px;
+    }
+
+    div.panel:hover > div.slider {
+        display: inline;
+    }
+
+    div.panel:hover > div.inputs {
+        margin-top: 10px;
+    }
+
+    div.panel span div.inputs {
         width: 100%;
     }
 
