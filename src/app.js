@@ -1,53 +1,75 @@
 const Graph = require("./index.js");
 
-let inputElements = { 1: "" };
+const inputElements = { 1: "" };
 
 const inputs = document.querySelector("div.inputs");
 
 const newInputButton = document.querySelector("div.newInputButton");
 newInputButton.addEventListener("click", addNewInput);
 
-function handleInputError(err) {
-    if (err != undefined) {
-        const errorParagraph = document.getElementById(
-            `e${Object.keys(err)[0]}`
-        );
-        const error = err[Object.keys(err)[0]];
-        errorParagraph.innerText = error;
+let inputsArray = [];
+
+const TheGraph = new Graph(document.querySelector("canvas"));
+
+const bindInput = element => {
+    inputsArray = [...inputsArray, element];
+    element.addEventListener("input", inputEventListener);
+};
+
+async function draw(inputId, equation) {
+    if (equation === "") {
+        cleanError(inputId);
     } else {
-        document
-            .querySelectorAll(".errorParagraph")
-            .forEach(p => (p.innerText = ""));
+        // let equationHasError = false;
+        TheGraph.drawGraph(equation)
+            .then(() => cleanError(inputId))
+            .catch(err => handleInputError(inputId, err));
     }
 }
 
-let TheGraph = new Graph(document.querySelector("canvas"), {
-    enableCoords: false
-});
+function inputEventListener(e) {
+    inputElements[e.target.id] = e.target.value;
 
-adjustCanvasSize();
+    draw(e.target.id, e.target.value);
+}
 
-const constructInputs = (function(inputElements) {
+function removeInputListener(elem) {
+    elem.removeEventListener("input", inputEventListener);
+    delete inputElements[elem.id];
+    // remove the input from the inputs array and rerender the input valuse
+    inputsArray = inputsArray.filter(input => input !== elem);
+    inputsArray.forEach(input => draw(elem.id, input.value));
+}
+
+function handleInputError(inputId, errMessage) {
+    const errorParagraph = document.getElementById(`e${inputId}`);
+    errorParagraph.innerText = errMessage;
+}
+
+function cleanError(inputId) {
+    document.getElementById(`e${inputId}`).innerText = "";
+}
+const constructInputs = (() => {
     Object.keys(inputElements).forEach(number => {
         createInput(number);
     });
-})(inputElements);
+})();
 
 function createInput(id) {
-    let input = document.createElement("input");
+    const input = document.createElement("input");
     input.id = id;
     input.type = "text";
     input.placeholder = "Type an Equation";
 
-    TheGraph.bindInput(input, handleInputError);
+    bindInput(input, handleInputError);
 
-    let errorParagraph = document.createElement("p");
+    const errorParagraph = document.createElement("p");
     errorParagraph.id = `e${id}`;
     errorParagraph.className = "errorParagraph";
 
-    let span = document.createElement("span");
+    const span = document.createElement("span");
 
-    let deleteButton = document.createElement("div");
+    const deleteButton = document.createElement("div");
     deleteButton.innerText = "X";
     deleteButton.id = `d${id}`;
     deleteButton.className = "inputDeleteButton";
@@ -61,19 +83,30 @@ function createInput(id) {
 
 function deleteInput(span, input) {
     delete inputElements[input.id];
-    TheGraph.removeInputListener(input);
+    removeInputListener(input);
     span.parentNode.removeChild(span);
 }
 
+function checkIfInputElementsIsEmpty() {
+    return Object.keys(inputElements).length === 0;
+}
+
+function getLastItem(array) {
+    return parseInt(array.slice(-1)[0], 10);
+}
+
 function addNewInput() {
-    const newId = parseInt(Object.keys(inputElements).slice(-1)[0]) + 1;
+    // if the input elements object is empty, the new input will have an id of 1
+    const newId = checkIfInputElementsIsEmpty()
+        ? 1
+        : getLastItem(Object.keys(inputElements)) + 1;
     createInput(newId);
     inputElements[newId] = "";
 }
 
 function adjustCanvasSize() {
-    function setCanvasSize() {
-        // * Adjust the canvas' width and height so that the canvas doesn't overflows
+    const setCanvasSize = () => {
+        // Adjust the canvas' width and height so that the canvas doesn't overflows
         let canvasHeight = window.innerHeight - 20;
         let canvasWidth = window.innerWidth - 300;
         if (canvasWidth > window.innerHeight - 20) {
@@ -87,21 +120,29 @@ function adjustCanvasSize() {
         } else {
             TheGraph.changeCanvasSize(520, 520);
         }
-    }
+    };
 
     window.addEventListener("resize", setCanvasSize);
 
     setCanvasSize();
 }
+adjustCanvasSize();
 
-let panel = document.querySelector("div.panel");
+// disable body scroll in mobile devices
+(function disableScroll() {
+    document.body.addEventListener("touchmove", e => e.preventDefault(), {
+        passive: false
+    });
+})();
+
+const panel = document.querySelector("div.panel");
 
 let isClicked = false;
 let savedHeight = 50;
 
-// * listen for window resize events to make sure the side panel covers 100vh of height when the window width is
-// * larger than 500px
-window.addEventListener("resize", function() {
+/*  listen for window resize events to make sure the side panel
+ covers 100vh of height when the window width is larger than 500px */
+window.addEventListener("resize", () => {
     if (window.innerWidth > 500) {
         panel.style.height = "100vh";
     } else {
@@ -128,8 +169,8 @@ function upEvent() {
 
 function moveEvent(e) {
     if (isClicked) {
-        // calculate the % the cursor is compared to window.innerHeight
-        let height = 112.5 - (e.screenY / window.innerHeight) * 100;
+        // calculate the % the cursor is compared to height of the window
+        const height = 101 - (e.pageY / window.innerHeight) * 100;
         panel.style.height = `${height}vh`;
         savedHeight = height;
     }
@@ -138,7 +179,7 @@ function moveEvent(e) {
 function touchMoveEvent(e) {
     if (isClicked) {
         // calculate the % the cursor is compared to window.innerHeight
-        let height = 112 - (e.touches[0].screenY / window.innerHeight) * 100;
+        const height = 112 - (e.touches[0].pageY / window.innerHeight) * 100;
         panel.style.height = `${height}vh`;
         savedHeight = height;
     }
