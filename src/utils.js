@@ -1,4 +1,4 @@
-let coordinates = document.createElement("div");
+const coordinates = document.createElement("div");
 
 Object.assign(coordinates.style, {
     "z-index": -1,
@@ -11,24 +11,22 @@ Object.assign(coordinates.style, {
     padding: "12px",
     "box-sizing": "border-box",
     "font-size": "1em",
-    display: "none"
+    display: "none",
 });
 
 document.querySelector("body").appendChild(coordinates);
 
 let timeout;
 const trackCanvasMouse = (e, canvas, originX, originY) => {
-    let coordsX = e.clientX;
-    let coordsY = e.clientY;
+    const coordsX = e.clientX;
+    const coordsY = e.clientY;
 
     // use x and y to show the coords to the user inside the coords div
-    let x = e.offsetX;
-    let y = e.offsetY;
-    let calculatedX = (x - originX) / 20;
-    let calculatedY = (originY + -y) / 20;
-    coordinates.innerText = `${calculatedX.toFixed(0)}, ${calculatedY.toFixed(
-        0
-    )}`;
+    const x = e.offsetX;
+    const y = e.offsetY;
+    const calculatedX = (x - originX) / 20;
+    const calculatedY = (originY + -y) / 20;
+    coordinates.innerText = `${calculatedX.toFixed(0)}, ${calculatedY.toFixed(0)}`;
 
     // * Gets the scroll position of the document to position the coords div accordingly
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
@@ -40,7 +38,7 @@ const trackCanvasMouse = (e, canvas, originX, originY) => {
     if (timeout) {
         clearTimeout(timeout);
     }
-    timeout = setTimeout(function() {
+    timeout = setTimeout(() => {
         coordinates.style.display = "none";
     }, 1000);
 };

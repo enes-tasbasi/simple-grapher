@@ -11,7 +11,7 @@ let inputsArray = [];
 
 const TheGraph = new Graph(document.querySelector("canvas"));
 
-const bindInput = element => {
+const bindInput = (element) => {
     inputsArray = [...inputsArray, element];
     element.addEventListener("input", inputEventListener);
 };
@@ -19,17 +19,21 @@ const bindInput = element => {
 async function draw(inputId, equation) {
     if (equation === "") {
         cleanError(inputId);
+        adjustCanvasSize();
     } else {
         // let equationHasError = false;
-        TheGraph.drawGraph(equation)
+        // TheGraph.drawGraph(equation)
+        //     .then(() => cleanError(inputId))
+        //     .catch((err) => handleInputError(inputId, err));
+
+        TheGraph.drawGraph(["x", "-", "-x"])
             .then(() => cleanError(inputId))
-            .catch(err => handleInputError(inputId, err));
+            .catch((err) => console.log(err));
     }
 }
 
 function inputEventListener(e) {
     inputElements[e.target.id] = e.target.value;
-
     draw(e.target.id, e.target.value);
 }
 
@@ -37,20 +41,21 @@ function removeInputListener(elem) {
     elem.removeEventListener("input", inputEventListener);
     delete inputElements[elem.id];
     // remove the input from the inputs array and rerender the input valuse
-    inputsArray = inputsArray.filter(input => input !== elem);
-    inputsArray.forEach(input => draw(elem.id, input.value));
+    inputsArray = inputsArray.filter((input) => input !== elem);
+    inputsArray.forEach((input) => draw(elem.id, input.value));
 }
 
 function handleInputError(inputId, errMessage) {
     const errorParagraph = document.getElementById(`e${inputId}`);
-    errorParagraph.innerText = errMessage;
+
+    if (errorParagraph) errorParagraph.innerText = errMessage;
 }
 
 function cleanError(inputId) {
     document.getElementById(`e${inputId}`).innerText = "";
 }
 const constructInputs = (() => {
-    Object.keys(inputElements).forEach(number => {
+    Object.keys(inputElements).forEach((number) => {
         createInput(number);
     });
 })();
@@ -97,9 +102,7 @@ function getLastItem(array) {
 
 function addNewInput() {
     // if the input elements object is empty, the new input will have an id of 1
-    const newId = checkIfInputElementsIsEmpty()
-        ? 1
-        : getLastItem(Object.keys(inputElements)) + 1;
+    const newId = checkIfInputElementsIsEmpty() ? 1 : getLastItem(Object.keys(inputElements)) + 1;
     createInput(newId);
     inputElements[newId] = "";
 }
@@ -130,10 +133,10 @@ adjustCanvasSize();
 
 // disable body scroll in mobile devices
 (function disableScroll() {
-    document.body.addEventListener("touchmove", e => e.preventDefault(), {
-        passive: false
+    document.body.addEventListener("touchmove", (e) => e.preventDefault(), {
+        passive: false,
     });
-})();
+}());
 
 const panel = document.querySelector("div.panel");
 
