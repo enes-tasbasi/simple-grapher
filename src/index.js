@@ -39,27 +39,29 @@ function Graph(canvas, options) {
         if (!Array.isArray(equation)) {
             returnVal = calcAndDraw(equation);
         } else {
-            const errors = [];
+            let errors = [];
 
-            Promise.all(
-                equation.map(
-                    (eachEquation) =>
-                        new Promise((resolve, reject) => {
-                            calcAndDraw(eachEquation)
-                                .then(() => resolve())
-                                .catch((err) => reject(err));
-                        }),
-                ),
-            )
-                .then((e) => console.log("No errors", e))
-                .catch((err) => console.log(err));
+            (async () => {
+                for (let i = 0; i < equation.length; i++) {
+                    let currentResult;
 
-            console.log(errors);
-            // if (errors.length > 0) {
-            //     returnVal = Promise.reject(errors);
-            // } else {
-            //     returnVal = Promise.resolve();
-            // }
+                    try {
+                        currentResult = await calcAndDraw(equation[i]);
+                    } catch (e) {
+                        currentResult = e;
+                    }
+
+                    errors = [currentResult, ...errors];
+                }
+
+                console.log(errors);
+            })();
+
+            if (errors.length > 0) {
+                returnVal = Promise.reject(errors);
+            } else {
+                returnVal = Promise.resolve();
+            }
         }
 
         return returnVal;
